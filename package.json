@@ -1,0 +1,26 @@
+{
+  "name": "slick-di",
+  "version": "0.0.2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "debug": "^2.6.0",
+    "reflect-metadata": "^0.1.9"
+  },
+  "typings": "lib/index.d.ts",
+  "devDependencies": {
+    "babel-core": "^6.22.1",
+    "babel-loader": "^6.2.10",
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^3.1.4",
+    "merge2": "^1.0.3",
+    "ts-loader": "^2.0.0",
+    "typescript": "^2.1.5",
+    "webpack-stream": "^3.2.0"
+  }
+}
