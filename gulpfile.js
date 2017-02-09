@@ -1,16 +1,22 @@
 const gulp = require('gulp'),
     tsc = require('gulp-typescript'),
     merge = require('merge2'),
-    webpack = require('webpack-stream');
+    webpack = require('webpack-stream'),
+    babel = require('gulp-babel'),
+    bump = require('gulp-bump');
 
 gulp.task('typescript', () => {
-    const project = tsc.createProject('tsconfig.json');
+    const project = tsc.createProject('tsconfig.json', {
+        declaration: true
+    });
 
     let out = gulp.src('./src/*.ts')
         .pipe(project())
 
     return merge([
-        out.js.pipe(gulp.dest('lib')),
+        out.js.pipe(babel({
+            presets: ['es2015', 'stage-0']
+        })).pipe(gulp.dest('lib')),
         out.dts.pipe(gulp.dest('lib'))
     ]);
 });
@@ -25,7 +31,7 @@ gulp.task('webpack', () => {
             module: {
                 loaders: [{
                     test: /\.ts(x?)$/,
-                    loader: 'babel-loader!ts-loader'
+                    loader: 'babel-loader?presets[]=es2015&presets[]=stage-0!ts-loader'
                 }]
             },
             output: {
@@ -38,4 +44,12 @@ gulp.task('webpack', () => {
         }*/
         })).pipe(gulp.dest('dist'))
 
-})
+});
+
+
+gulp.task('default', ['webpack', 'typescript']);
+
+gulp.task('bump', () => {
+    return gulp.src('package.json')
+    .pipe(bump()).pipe(gulp.dest('.'));
+});

@@ -9,7 +9,7 @@
         "emitDecoratorMetadata": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "declaration": true,
+        "declaration": false,
         "importHelpers": true,
         "types": [
             "reflect-metadata"

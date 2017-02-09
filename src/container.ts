@@ -141,9 +141,9 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
             return this.parent.get<T>(key, targetKey, resolveIn);
         }
 
-        // No point in registrering a string
-        if (typeof key === 'string') {
-            throw createError('DIResolveError', 'no component registered for key: ' + key);
+        // No point in registrering a string or symbol or number
+        if (typeof key === 'string' || typeof key === 'symbol' || typeof key === 'number') {
+            throw createError('DIResolveError', 'no component registered for key: ' + String(key));
         }
 
         this.autoRegister(key, null, targetKey, resolveIn);
