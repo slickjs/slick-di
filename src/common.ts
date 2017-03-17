@@ -9,7 +9,6 @@ export const MetaKeys = {
 
 export var emptyParameters = Object.freeze([]);
 
-
 const paramRegEx = /function[^(]*\(([^)]*)\)/i;
 
 export function getFunctionParameters(fn: Function, cache: boolean = true): string[] {
