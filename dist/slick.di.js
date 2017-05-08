@@ -210,7 +210,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (entry !== undefined) {
 	                return entry[0](this);
 	            }
-	            if (this.parent && this.parent.hasHandler(key)) {
+	            if (this.parent && this.parent.hasHandler(key, true)) {
 	                debug("%s: found key '%s' on parent", this.id, key);
 	                return this.parent.get(key, targetKey, resolveIn);
 	            }

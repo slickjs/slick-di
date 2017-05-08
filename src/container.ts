@@ -136,7 +136,7 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
         }
 
 
-        if (this.parent && this.parent.hasHandler(key)) {
+        if (this.parent && this.parent.hasHandler(key, true)) {
             debug("%s: found key '%s' on parent", this.id, key);
             return this.parent.get<T>(key, targetKey, resolveIn);
         }
