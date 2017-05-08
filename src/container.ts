@@ -5,9 +5,9 @@ import {
 import { DIError, createError } from './errors';
 import { ClassActivator } from './activators';
 import { Resolver } from './resolvers';
-import * as Debug from 'debug';
+//import * as //Debug from '//debug';
 
-const debug = Debug("di");
+//const //debug = //Debug("di");
 
 var counter = 0;
 function genid() {
@@ -100,7 +100,7 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
     * @param {Object} key The key that identifies the dependency at resolution time; usually a constructor function.
     */
     unregister(key: any): void {
-        debug('%s: Unregister key: %s', this.id, key);
+        //debug('%s: Unregister key: %s', this.id, key);
         this.entries.delete(key);
     }
 
@@ -114,7 +114,7 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
     * @return {Object} Returns the resolved instance.
     */
     get<T>(key: any, targetKey?: string, resolveIn?: IContainer): T {
-        debug("%s: Get %s, target: %s", this.id, String(key), targetKey);
+        //debug("%s: Get %s, target: %s", this.id, String(key), targetKey);
         var entry;
 
         if (key === null || key === undefined) {
@@ -136,8 +136,9 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
         }
 
 
+
         if (this.parent && this.parent.hasHandler(key, true)) {
-            debug("%s: found key '%s' on parent", this.id, key);
+            //debug("%s: found key '%s' on parent", this.id, key);
             return this.parent.get<T>(key, targetKey, resolveIn);
         }
 
@@ -188,7 +189,7 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
     createChild(): IContainer {
         let childContainer = new Container(this.constructionInfo);
         childContainer.parent = this;
-        debug("%s: Create child container: %s", this.id, childContainer.id);
+        //debug("%s: Create child container: %s", this.id, childContainer.id);
         return childContainer;
     }
 
@@ -199,7 +200,7 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
      * @return {Array<any>}
      */
     public resolveDependencies(fn: Function, targetKey?: string): any[] {
-        debug("%s: Resolve dependencies for: %j", this.id, fn.name);
+        //debug("%s: Resolve dependencies for: %j", this.id, fn.name);
         var info = this._getOrCreateConstructionSet(fn, targetKey),
             keys = info.keys,
             args = new Array(keys.length);
@@ -214,7 +215,7 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
             if (i < ii) {
                 message += ` The argument at index ${i} (key:${keys[i]}) could not be satisfied.`;
             }
-            debug('resolve error %s', e)
+            //debug('resolve error %s', e)
             throw createError("DependencyError", message, e);
         }
 
@@ -243,14 +244,14 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
             if (deps !== undefined && Array.isArray(deps)) {
                 args = args.concat(deps);
             }
-            debug("%s: invoking '%s', with dependencies:", this.id, fn.name, info.keys);
+            //debug("%s: invoking '%s', with dependencies:", this.id, fn.name, info.keys);
             return (<any>info.activator).invoke(fn, args, targetKey, keys);
 
         } catch (e) {
 
             var activatingText = info.activator instanceof ClassActivator ? 'instantiating' : 'invoking';
             var message = `Error ${activatingText} ${(<any>fn).name}.`
-            debug('invoke error %s', e)
+            //debug('invoke error %s', e)
             message += ' Check the inner error for details.'
 
             throw createError("DIInvokeError", message, e);
@@ -259,17 +260,17 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
     }
 
     public registerInstance(key: any, instance: any) {
-        debug("%s: Register instance %s", this.id, key);
+        //debug("%s: Register instance %s", this.id, key);
         this.registerHandler(key, _ => instance);
     }
 
     public registerTransient(key: any, fn: Function, targetKey?: string) {
-        debug("%s: Register transient %s", this.id, key);
+        //debug("%s: Register transient %s", this.id, key);
         this.registerHandler(key, x => x.invoke(fn, null, targetKey))
     }
 
     public registerSingleton(key: any, fn: Function, targetKey?: string) {
-        debug("%s: Register singleton %s", this.id, key);
+        //debug("%s: Register singleton %s", this.id, key);
         var singleton;
         this.registerHandler(key, x => singleton || (singleton = x.invoke(fn, null, targetKey)))
     }
