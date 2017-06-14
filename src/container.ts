@@ -5,9 +5,6 @@ import {
 import { DIError, createError } from './errors';
 import { ClassActivator } from './activators';
 import { Resolver } from './resolvers';
-//import * as //Debug from '//debug';
-
-//const //debug = //Debug("di");
 
 var counter = 0;
 function genid() {
@@ -67,15 +64,15 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
     }
 
     /**
-  * Registers a type (constructor function) by inspecting its registration annotations. If none are found, then the default singleton registration is used.
+  * Registers a type (constructor function) by inspecting its registration annotations. If none are found, then the default transient registration is used.
   *
   * @method autoRegister
   * @param {Function} fn The constructor function to use when the dependency needs to be instantiated.
   * @param {Object} [key] The key that identifies the dependency at resolution time; usually a constructor function.
   */
-    autoRegister(fn: any, key?: any, targetKey?: string, resolveIn?:IContainer): void {
+    autoRegister(fn: any, key?: any, targetKey?: string, resolveIn?: IContainer): void {
         var registration;
-        let container = resolveIn||this;
+        let container = resolveIn || this;
         if (fn === null || fn === undefined) {
             throw new DIBadKeyError('no key');
         }
@@ -86,7 +83,7 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
             if (registration !== undefined) {
                 registration.register(container, key || fn, fn);
             } else {
-                container.registerSingleton(key || fn, fn, targetKey);
+                container.registerTransient(key || fn, fn, targetKey);
             }
         } else {
             container.registerInstance(fn, fn);
@@ -142,7 +139,7 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
             return this.parent.get<T>(key, targetKey, resolveIn);
         }
 
-        // No point in registrering a string or symbol or number
+        // No point in auto registrering a string or symbol or number
         if (typeof key === 'string' || typeof key === 'symbol' || typeof key === 'number') {
             throw createError('DIResolveError', 'no component registered for key: ' + String(key));
         }

@@ -2,26 +2,31 @@
 export class DIError extends Error {
 	name: string
 	message: string
-	constructor(message?:string) {
+	constructor(message?: string) {
 		super(message);
 		this.message = message;
 	}
 
-	toString (): string {
+	toString(): string {
 		return `[${this.name}: ${this.message}]`
 	}
 }
 
 export class DIAggregateError extends DIError {
-	error:Error
-	constructor(message:string, errors:Error) {
+	error: Error
+	constructor(message: string, errors: Error) {
 		super(message);
 		this.error = errors;
 	}
-	
-	toString (): string {
+
+	get inner(): Error {
+		if (this.error && (<any>this.error).inner) return (<any>this.error).inner;
+		return this.error;
+	}
+
+	toString(): string {
 		if (this.error == null) {
-			return `[${this.name}: ${this.message}]`;	
+			return `[${this.name}: ${this.message}]`;
 		} else {
 			return String.prototype.toString.call(this.error);
 		}
@@ -31,7 +36,7 @@ export class DIAggregateError extends DIError {
 
 
 
-export function createError(name:string, message:string, error?:Error): Error {
+export function createError(name: string, message: string, error?: Error): Error {
 	let e;
 	if (error) {
 		e = new DIAggregateError(message, error);

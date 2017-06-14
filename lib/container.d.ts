@@ -27,7 +27,7 @@ export declare class Container implements IActivator, IContainer, IDependencyRes
     */
     hasHandler(key: any, checkParent?: boolean): boolean;
     /**
-  * Registers a type (constructor function) by inspecting its registration annotations. If none are found, then the default singleton registration is used.
+  * Registers a type (constructor function) by inspecting its registration annotations. If none are found, then the default transient registration is used.
   *
   * @method autoRegister
   * @param {Function} fn The constructor function to use when the dependency needs to be instantiated.

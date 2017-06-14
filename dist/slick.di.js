@@ -52,7 +52,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
@@ -61,6 +61,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	    }
 	}
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var container_1 = __webpack_require__(1);
 	exports.Container = container_1.Container;
 	exports.DIBadKeyError = container_1.DIBadKeyError;
@@ -71,9 +72,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(4));
 	__export(__webpack_require__(5));
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
@@ -87,12 +88,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var common_1 = __webpack_require__(2);
 	var errors_1 = __webpack_require__(3);
 	var activators_1 = __webpack_require__(4);
 	var resolvers_1 = __webpack_require__(5);
-	//import * as //Debug from '//debug';
-	//const //debug = //Debug("di");
 	var counter = 0;
 	function genid() {
 	    return ++counter + "";
@@ -145,7 +145,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return this.entries.has(key) || checkParent && this.parent && this.parent.hasHandler(key, checkParent);
 	        }
 	        /**
-	        * Registers a type (constructor function) by inspecting its registration annotations. If none are found, then the default singleton registration is used.
+	        * Registers a type (constructor function) by inspecting its registration annotations. If none are found, then the default transient registration is used.
 	        *
 	        * @method autoRegister
 	        * @param {Function} fn The constructor function to use when the dependency needs to be instantiated.
@@ -165,7 +165,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                if (registration !== undefined) {
 	                    registration.register(container, key || fn, fn);
 	                } else {
-	                    container.registerSingleton(key || fn, fn, targetKey);
+	                    container.registerTransient(key || fn, fn, targetKey);
 	                }
 	            } else {
 	                container.registerInstance(fn, fn);
@@ -214,7 +214,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                //debug("%s: found key '%s' on parent", this.id, key);
 	                return this.parent.get(key, targetKey, resolveIn);
 	            }
-	            // No point in registrering a string or symbol or number
+	            // No point in auto registrering a string or symbol or number
 	            if (typeof key === 'string' || (typeof key === "undefined" ? "undefined" : _typeof(key)) === 'symbol' || typeof key === 'number') {
 	                throw errors_1.createError('DIResolveError', 'no component registered for key: ' + String(key));
 	            }
@@ -417,12 +417,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports.Container = Container;
 
-/***/ },
+/***/ }),
 /* 2 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	"use strict";
 
+	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.MetaKeys = {
 	    registration: Symbol.for('di:registration'),
 	    instanceActivator: Symbol.for('di:instance-activator'),
@@ -451,9 +452,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	exports.getFunctionParameters = getFunctionParameters;
 
-/***/ },
+/***/ }),
 /* 3 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	"use strict";
 
@@ -464,6 +465,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	Object.defineProperty(exports, "__esModule", { value: true });
 
 	var DIError = function (_Error) {
 	    _inherits(DIError, _Error);
@@ -510,6 +513,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return String.prototype.toString.call(this.error);
 	            }
 	        }
+	    }, {
+	        key: "inner",
+	        get: function get() {
+	            if (this.error && this.error.inner) return this.error.inner;
+	            return this.error;
+	        }
 	    }]);
 
 	    return DIAggregateError;
@@ -528,21 +537,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	exports.createError = createError;
 
-/***/ },
+/***/ }),
 /* 4 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	"use strict";
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/**
 	* Used to instantiate a class.
 	*
 	* @class ClassActivator
 	* @constructor
 	*/
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var ClassActivator = function () {
 	    function ClassActivator() {
@@ -606,17 +617,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	AsyncClassActivator.instance = new AsyncClassActivator();
 	exports.AsyncClassActivator = AsyncClassActivator;
 
-/***/ },
+/***/ }),
 /* 5 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	"use strict";
-	/**
-	* An abstract resolver used to allow functions/classes to specify custom dependency resolution logic.
-	*
-	* @class Resolver
-	* @constructor
-	*/
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -625,6 +630,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	Object.defineProperty(exports, "__esModule", { value: true });
+	/**
+	* An abstract resolver used to allow functions/classes to specify custom dependency resolution logic.
+	*
+	* @class Resolver
+	* @constructor
+	*/
 
 	var Resolver = function Resolver() {
 	    _classCallCheck(this, Resolver);
@@ -862,12 +875,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports.Parent = Parent;
 
-/***/ },
+/***/ }),
 /* 6 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var common_1 = __webpack_require__(2);
 	var registers_1 = __webpack_require__(7);
 	var activators_1 = __webpack_require__(4);
@@ -922,11 +936,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	exports.dependencyResolve = dependencyResolve;
 
-/***/ },
+/***/ }),
 /* 7 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	"use strict";
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/**
 	* Used to allow functions/classes to indicate that they should be registered as transients with the container.
 	*
@@ -934,10 +954,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @constructor
 	* @param {Object} [key] The key to register as.
 	*/
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var TransientRegistration = function () {
 	    function TransientRegistration(key) {
@@ -1010,7 +1026,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports.SingletonRegistration = SingletonRegistration;
 
-/***/ }
+/***/ })
 /******/ ])
 });
 ;
