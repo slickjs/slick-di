@@ -1,4 +1,4 @@
-import { MetaKeys, IActivator, emptyParameters, IDependencyResolver} from './common';
+import { MetaKeys, IActivator, emptyParameters, IDependencyResolver } from './common';
 import { TransientRegistration, SingletonRegistration } from './registers';
 import { FactoryActivator } from './activators'
 
@@ -39,8 +39,8 @@ export function factory() {
     return instanceActivator(FactoryActivator.instance);
 }
 
-export function dependencyResolve(value:IDependencyResolver, targetKey?:string): ClassDecorator {
-    return function(target:Function) {
+export function dependencyResolve(value: IDependencyResolver, targetKey?: string): ClassDecorator {
+    return function (target: Function) {
         Reflect.defineMetadata(MetaKeys.dependencyResolver, value, target, targetKey);
     }
 }

@@ -6,6 +6,7 @@ import { DIError, createError } from './errors';
 import { ClassActivator } from './activators';
 import { Resolver } from './resolvers';
 
+
 var counter = 0;
 function genid() {
     return ++counter + "";
@@ -78,7 +79,7 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
         }
         if (typeof fn === 'function') {
 
-            registration = Reflect.get(fn, MetaKeys.registration, targetKey) // Metadata.get(Metadata.registration, fn, targetKey);
+            registration = Reflect.getOwnMetadata(MetaKeys.registration, fn, targetKey) // Metadata.get(Metadata.registration, fn, targetKey);
 
             if (registration !== undefined) {
                 registration.register(container, key || fn, fn);

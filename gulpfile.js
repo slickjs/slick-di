@@ -39,9 +39,9 @@ gulp.task('webpack', () => {
                 libraryTarget: "umd",
                 filename: 'slick.di.js'
             },
-        /*externals: {
-            "debug": "debug"
-        }*/
+            /*externals: {
+                "debug": "debug"
+            }*/
         })).pipe(gulp.dest('dist'))
 
 });
@@ -51,5 +51,13 @@ gulp.task('default', ['webpack', 'typescript']);
 
 gulp.task('bump', () => {
     return gulp.src('package.json')
-    .pipe(bump()).pipe(gulp.dest('.'));
+        .pipe(bump()).pipe(gulp.dest('.'));
 });
+
+gulp.task('bump:minor', () => {
+    return gulp.src('package.json')
+        .pipe(bump({
+            type: 'minor'
+        }))
+        .pipe(gulp.dest('.'));
+})

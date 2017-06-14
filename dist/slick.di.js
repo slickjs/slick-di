@@ -161,7 +161,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                throw new DIBadKeyError('no key');
 	            }
 	            if (typeof fn === 'function') {
-	                registration = Reflect.get(fn, common_1.MetaKeys.registration, targetKey); // Metadata.get(Metadata.registration, fn, targetKey);
+	                registration = Reflect.getOwnMetadata(common_1.MetaKeys.registration, fn, targetKey); // Metadata.get(Metadata.registration, fn, targetKey);
 	                if (registration !== undefined) {
 	                    registration.register(container, key || fn, fn);
 	                } else {
