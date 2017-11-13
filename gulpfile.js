@@ -3,7 +3,8 @@ const gulp = require('gulp'),
     merge = require('merge2'),
     webpack = require('webpack-stream'),
     babel = require('gulp-babel'),
-    bump = require('gulp-bump');
+    bump = require('gulp-bump'),
+    typeDoc = require('gulp-typedoc');
 
 gulp.task('typescript', () => {
     const project = tsc.createProject('tsconfig.json', {
@@ -43,6 +44,25 @@ gulp.task('webpack', () => {
                 "debug": "debug"
             }*/
         })).pipe(gulp.dest('dist'))
+
+});
+
+
+gulp.task('documentation', () => {
+
+    return gulp.src('src/**/*.ts')
+        .pipe(typeDoc({
+            module: 'commonjs',
+            target: 'ed2017',
+
+            includeDeclarations: true,
+            name: "SlickDI",
+            entryPoint: 'Container',
+            out: './docs',
+            readme: './README.md',
+            ignoreCompilerErrors: true
+
+        }));
 
 });
 

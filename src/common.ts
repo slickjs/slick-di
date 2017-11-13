@@ -3,8 +3,8 @@ export const MetaKeys = {
     registration: Symbol.for('di:registration'),
     instanceActivator: Symbol.for('di:instance-activator'),
     dependencyResolver: Symbol.for('di:dependency-resolver'),
-    paramTypes: 'design:paramtypes',
-    properties: 'design:properties'
+    paramTypes: 'design:paramtypes', // This should match, what tsc is emitting
+    properties: 'design:properties' // This should match, what tsc is emitting
 }
 
 export var emptyParameters = Object.freeze([]);
@@ -14,7 +14,7 @@ const paramRegEx = /function[^(]*\(([^)]*)\)/i;
 export function getFunctionParameters(fn: Function, cache: boolean = true): string[] {
     let params = Reflect.getOwnMetadata(MetaKeys.paramTypes, fn);
     if (!params) {
-        let match = fn.toString().match(paramRegEx)
+        const match = fn.toString().match(paramRegEx)
         if (match) {
             params = match[1].replace(/\W+/, ' ').split(' ').map(x => x.replace(',', '').trim())
                 .filter(m => m !== '')
@@ -30,9 +30,16 @@ export interface IHandlerFunc {
     (c: IActivator): any
 }
 
+/**
+ * IActivator has the responsibility to instantiate a function
+ * 
+ * @export
+ * @interface IActivator
+ */
 export interface IActivator {
     invoke(fn: Function, args?: any[], targetKey?: string): any
 }
+
 
 export interface IDependencyResolver {
     resolveDependencies(fn: Function, targetKey?: string): any[]

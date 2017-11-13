@@ -20,7 +20,7 @@ export class ClassActivator implements IActivator {
 * @class FactoryActivator
 * @constructor
 */
-export class FactoryActivator {
+export class FactoryActivator implements IActivator {
     static instance = new FactoryActivator();
 
     invoke(fn: Function, args: any[]): any {
@@ -32,7 +32,7 @@ export class AsyncClassActivator implements IActivator {
     static instance = new AsyncClassActivator();
 
     invoke(fn: Function, args: any[]): any {
-        return Promise.all(args).then( args => {
+        return Promise.all(args).then(args => {
             return Reflect.construct(fn, args);
         })
     }
