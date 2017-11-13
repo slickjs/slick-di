@@ -28,14 +28,18 @@ export class DIBadKeyError extends DIError {
 }
 
 export class Container implements IActivator, IContainer, IDependencyResolver {
-    entries: Map<any, IHandlerFunc[]>;
-    constructionInfo: Map<Function, ConstructionInfo>;
-    parent?: Container;
-    id: string;
-    constructor(info?: Map<Function, ConstructionInfo>) {
+
+    private entries: Map<any, IHandlerFunc[]>;
+    private constructionInfo: Map<Function, ConstructionInfo>;
+
+    readonly parent?: Container;
+    readonly id: string;
+
+    constructor(info?: Map<Function, ConstructionInfo>, parent?: Container) {
         this.entries = new Map<any, IHandlerFunc[]>();
         this.constructionInfo = info || new Map<Function, ConstructionInfo>();
         this.id = genid();
+        this.parent = parent;
     }
 
     get root(): IContainer {
@@ -48,7 +52,7 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
     }
 
     /**
-     * Inspects the container to determine if a particular key has been registred.
+    * Inspects the container to determine if a particular key has been registred.
     *
     * @method hasHandler
     * @param {Object} key The key that identifies the dependency at resolution time; usually a constructor function.
@@ -65,12 +69,12 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
     }
 
     /**
-  * Registers a type (constructor function) by inspecting its registration annotations. If none are found, then the default transient registration is used.
-  *
-  * @method autoRegister
-  * @param {Function} fn The constructor function to use when the dependency needs to be instantiated.
-  * @param {Object} [key] The key that identifies the dependency at resolution time; usually a constructor function.
-  */
+    * Registers a type (constructor function) by inspecting its registration annotations. If none are found, then the default transient registration is used.
+    *
+    * @method autoRegister
+    * @param {Function} fn The constructor function to use when the dependency needs to be instantiated.
+    * @param {Object} [key] The key that identifies the dependency at resolution time; usually a constructor function.
+    */
     autoRegister(fn: any, key?: any, targetKey?: string, resolveIn?: IContainer): void {
         var registration;
         let container = resolveIn || this;
@@ -106,6 +110,7 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
 
     /**
     * Resolves a single instance based on the provided key.
+    * If the key is not found, the container will try to auto resolve it.
     *
     * @method get
     * @param {Object} key The key that identifies the object to resolve.
@@ -185,8 +190,7 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
     * @return {Container} Returns a new container instance parented to this.
     */
     createChild(): IContainer {
-        let childContainer = new Container(this.constructionInfo);
-        childContainer.parent = this;
+        let childContainer = new Container(this.constructionInfo, this);
         //debug("%s: Create child container: %s", this.id, childContainer.id);
         return childContainer;
     }
@@ -213,7 +217,7 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
             if (i < ii) {
                 message += ` The argument at index ${i} (key:${keys[i]}) could not be satisfied.`;
             }
-            //debug('resolve error %s', e)
+
             throw createError("DependencyError", message, e);
         }
 
@@ -242,14 +246,13 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
             if (deps !== undefined && Array.isArray(deps)) {
                 args = args.concat(deps);
             }
-            //debug("%s: invoking '%s', with dependencies:", this.id, fn.name, info.keys);
+
             return (<any>info.activator).invoke(fn, args, targetKey, keys);
 
         } catch (e) {
 
             var activatingText = info.activator instanceof ClassActivator ? 'instantiating' : 'invoking';
             var message = `Error ${activatingText} ${(<any>fn).name}.`
-            //debug('invoke error %s', e)
             message += ' Check the inner error for details.'
 
             throw createError("DIInvokeError", message, e);
@@ -278,13 +281,12 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
     }
 
     protected _getOrCreateEntry(key: string): IHandlerFunc[] {
-        var entry;
 
         if (key === null || key === undefined) {
             throw new DIError('key cannot be null or undefined.  (Are you trying to inject something that doesn\'t exist with DI?)');
         }
 
-        entry = this.entries.get(key);
+        var entry = this.entries.get(key);
 
         if (entry === undefined) {
             entry = [];

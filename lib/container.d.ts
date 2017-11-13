@@ -11,14 +11,14 @@ export declare class DIBadKeyError extends DIError {
     constructor(message?: string);
 }
 export declare class Container implements IActivator, IContainer, IDependencyResolver {
-    entries: Map<any, IHandlerFunc[]>;
-    constructionInfo: Map<Function, ConstructionInfo>;
-    parent?: Container;
-    id: string;
-    constructor(info?: Map<Function, ConstructionInfo>);
+    private entries;
+    private constructionInfo;
+    readonly parent?: Container;
+    readonly id: string;
+    constructor(info?: Map<Function, ConstructionInfo>, parent?: Container);
     readonly root: IContainer;
     /**
-     * Inspects the container to determine if a particular key has been registred.
+    * Inspects the container to determine if a particular key has been registred.
     *
     * @method hasHandler
     * @param {Object} key The key that identifies the dependency at resolution time; usually a constructor function.
@@ -27,12 +27,12 @@ export declare class Container implements IActivator, IContainer, IDependencyRes
     */
     hasHandler(key: any, checkParent?: boolean): boolean;
     /**
-  * Registers a type (constructor function) by inspecting its registration annotations. If none are found, then the default transient registration is used.
-  *
-  * @method autoRegister
-  * @param {Function} fn The constructor function to use when the dependency needs to be instantiated.
-  * @param {Object} [key] The key that identifies the dependency at resolution time; usually a constructor function.
-  */
+    * Registers a type (constructor function) by inspecting its registration annotations. If none are found, then the default transient registration is used.
+    *
+    * @method autoRegister
+    * @param {Function} fn The constructor function to use when the dependency needs to be instantiated.
+    * @param {Object} [key] The key that identifies the dependency at resolution time; usually a constructor function.
+    */
     autoRegister(fn: any, key?: any, targetKey?: string, resolveIn?: IContainer): void;
     /**
     * Unregisters based on key.
@@ -43,6 +43,7 @@ export declare class Container implements IActivator, IContainer, IDependencyRes
     unregister(key: any): void;
     /**
     * Resolves a single instance based on the provided key.
+    * If the key is not found, the container will try to auto resolve it.
     *
     * @method get
     * @param {Object} key The key that identifies the object to resolve.
