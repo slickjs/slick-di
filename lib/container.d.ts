@@ -17,6 +17,7 @@ export declare class Container implements IActivator, IContainer, IDependencyRes
     id: string;
     constructor(info?: Map<Function, ConstructionInfo>);
     readonly root: IContainer;
+    makeGlobal(): void;
     /**
      * Inspects the container to determine if a particular key has been registred.
     *
@@ -87,4 +88,8 @@ export declare class Container implements IActivator, IContainer, IDependencyRes
     protected _getOrCreateEntry(key: string): IHandlerFunc[];
     protected _getOrCreateConstructionSet(fn: Function, targetKey: string): ConstructionInfo;
     private _createConstructionSet(fn, targetKey);
+}
+export declare namespace Container {
+    function makeGlobal(container: Container): void;
+    function global(): Container;
 }

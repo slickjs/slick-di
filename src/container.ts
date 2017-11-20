@@ -47,6 +47,10 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
         return root
     }
 
+    makeGlobal() {
+        Container.makeGlobal(this);
+    }
+
     /**
      * Inspects the container to determine if a particular key has been registred.
     *
@@ -327,4 +331,18 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
     }
 
 
+}
+
+
+export namespace Container {
+     
+    var _global: Container | undefined;
+
+    export function makeGlobal(container:Container) {
+        _global = container;
+    }
+
+    export function global() {
+        return _global;
+    }
 }

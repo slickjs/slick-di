@@ -67,7 +67,7 @@ gulp.task('documentation', () => {
 });
 
 
-gulp.task('default', ['webpack', 'typescript']);
+gulp.task('default', ['typescript']);
 
 gulp.task('bump', () => {
     return gulp.src('package.json')

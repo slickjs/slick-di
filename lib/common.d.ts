@@ -10,6 +10,12 @@ export declare function getFunctionParameters(fn: Function, cache?: boolean): st
 export interface IHandlerFunc {
     (c: IActivator): any;
 }
+/**
+ * IActivator has the responsibility to instantiate a function
+ *
+ * @export
+ * @interface IActivator
+ */
 export interface IActivator {
     invoke(fn: Function, args?: any[], targetKey?: string): any;
 }

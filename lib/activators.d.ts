@@ -15,7 +15,7 @@ export declare class ClassActivator implements IActivator {
 * @class FactoryActivator
 * @constructor
 */
-export declare class FactoryActivator {
+export declare class FactoryActivator implements IActivator {
     static instance: FactoryActivator;
     invoke(fn: Function, args: any[]): any;
 }
