@@ -10,7 +10,7 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "declaration": false,
-        "importHelpers": true,
+        "importHelpers": false,
         "types": [
             "reflect-metadata"
         ]
