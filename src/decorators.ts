@@ -1,6 +1,8 @@
 import { MetaKeys, IActivator, emptyParameters, IDependencyResolver } from './common';
 import { TransientRegistration, SingletonRegistration } from './registers';
-import { FactoryActivator } from './activators'
+import { FactoryActivator } from './activators';
+
+
 
 /**
  * Auto inject dependencies.

@@ -122,7 +122,7 @@ export class Optional extends Resolver {
     * @param {Container} container The container to resolve from.
     * @return {Object} Returns the instance if found; otherwise null.
     */
-    get(container: IContainer): any {
+    get(container: IContainer) {
         if (container.hasHandler(this.key, this.checkParent)) {
             return container.get(this.key);
         }
@@ -167,7 +167,7 @@ export class Parent extends Resolver {
     * @param {Container} container The container to resolve the parent from.
     * @return {Function} Returns the matching instance from the parent container
     */
-    get(container: IContainer): any {
+    get(container: IContainer) {
         return container.parent
             ? container.parent.get(this.key)
             : null;

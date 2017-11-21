@@ -5,6 +5,7 @@
         "noImplicitAny": false,
         "sourceMap": false,
         "outDir": "lib",
+        "rootDir": "src",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "noUnusedLocals": true,
