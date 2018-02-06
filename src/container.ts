@@ -337,14 +337,16 @@ export class Container implements IActivator, IContainer, IDependencyResolver {
 
 
 export namespace Container {
-     
+
     var _global: Container | undefined;
 
-    export function makeGlobal(container:Container) {
+    export function makeGlobal(container: Container) {
         _global = container;
     }
 
     export function global() {
+        if (!_global)
+            _global = new Container();
         return _global;
     }
 }
